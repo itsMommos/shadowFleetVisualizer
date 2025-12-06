@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Rotte Navi Petrolio Russo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #34495e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-yes {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-no {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            font-size: 12px;
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+
+        .highlight-row {
+            background: #fffbea !important;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-section,
+            .row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚢 Dashboard Rotte Navi Petrolio Russo</h1>
+            <p class="subtitle">Visualizzazione e analisi dati delle rotte di trasporto petrolifero</p>
+        </header>
+
+        <div class="filters-section">
+            <div class="filters-title">🔍 Filtri di Ricerca</div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="imoSearch">Ricerca per IMO</label>
+                    <input type="text" id="imoSearch" placeholder="Es: 9286463">
+                </div>
+                <div class="filter-group">
+                    <label for="startDate">Data Arrivo Da</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="filter-group">
+                    <label for="endDate">Data Arrivo A</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="filter-group">
+                    <label for="arrivalState">Stato Arrivo</label>
+                    <select id="arrivalState">
+                        <option value="">Tutti gli stati</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="ownerState">Stato Proprietario</label>
+                    <select id="ownerState">
+                        <option value="">Tutti gli stati</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="managerState">Stato Manager</label>
+                    <select id="managerState">
+                        <option value="">Tutti gli stati</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="shipToShip">Ship-to-Ship</label>
+                    <select id="shipToShip">
+                        <option value="">Tutti</option>
+                        <option value="YES">Sì</option>
+                        <option value="NO">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="applyFilters()">Applica Filtri</button>
+                <button class="btn-secondary" onclick="resetFilters()">Reset</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalRoutes">0</div>
+                <div class="stat-label">Rotte Totali</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalShips">0</div>
+                <div class="stat-label">Navi Uniche</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalShipToShip">0</div>
+                <div class="stat-label">Ship-to-Ship</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalCountries">0</div>
+                <div class="stat-label">Paesi Destinazione</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">📍 Distribuzione per Bandiera</div>
+                <canvas id="flagChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌍 Distribuzione per Stato Arrivo</div>
+                <canvas id="arrivalStateChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">📊 Distribuzione Ship-to-Ship</div>
+                <canvas id="shipToShipChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🏆 Top 10 IMO</div>
+                <canvas id="topIMOChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">🚩 Top 10 Bandiere</div>
+                <canvas id="topFlagChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🏙️ Top 10 Stati Arrivo</div>
+                <canvas id="topCountriesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">📅 Arrivi per Mese</div>
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <div class="table-title">📋 Dettagli Rotte</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome Nave</th>
+                        <th>IMO</th>
+                        <th>Bandiera</th>
+                        <th>Data Arrivo</th>
+                        <th>Stato Arrivo</th>
+                        <th>Stato Proprietario</th>
+                        <th>Ship-to-Ship</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <div class="pagination" id="pagination"></div>
+        </table>
+    </div>
+
+    <script>
+        let allData = [];
+        let filteredData = [];
+        let charts = {};
+        const itemsPerPage = 20;
+        let currentPage = 1;
+
+        // Carica dati da routes.json
+        async function loadData() {
+            try {
+                const response = await fetch('routes.json');
+                const data = await response.json();
+                allData = data.routes || [];
+                filteredData = [...allData];
+                
+                // Popola dropdown
+                populateDropdowns();
+                
+                // Aggiorna tutto
+                updateDashboard();
+            } catch (error) {
+                console.error('Errore nel caricamento:', error);
+                document.querySelector('.no-data') || (document.body.innerHTML = '<div class="no-data">Errore nel caricamento del file routes.json</div>');
+            }
+        }
+
+        function populateDropdowns() {
+            const arrivalStates = new Set();
+            const ownerStates = new Set();
+            const managerStates = new Set();
+
+            allData.forEach(route => {
+                if (route['Arrival State']) arrivalStates.add(route['Arrival State'].trim());
+                if (route['Owner State']) ownerStates.add(route['Owner State'].trim());
+                if (route['Manager State']) managerStates.add(route['Manager State'].trim());
+            });
+
+            const populateSelect = (id, items) => {
+                const select = document.getElementById(id);
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item;
+                    option.textContent = item;
+                    select.appendChild(option);
+                });
+            };
+
+            populateSelect('arrivalState', Array.from(arrivalStates).sort());
+            populateSelect('ownerState', Array.from(ownerStates).sort());
+            populateSelect('managerState', Array.from(managerStates).sort());
+        }
+
+        function applyFilters() {
+            const imo = document.getElementById('imoSearch').value.trim();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const arrivalState = document.getElementById('arrivalState').value;
+            const ownerState = document.getElementById('ownerState').value;
+            const managerState = document.getElementById('managerState').value;
+            const shipToShip = document.getElementById('shipToShip').value;
+
+            filteredData = allData.filter(route => {
+                if (imo && route.IMO.toString() !== imo) return false;
+                if (startDate && new Date(route['Time of Arrival']) < new Date(startDate)) return false;
+                if (endDate && new Date(route['Time of Arrival']) > new Date(endDate)) return false;
+                if (arrivalState && route['Arrival State'].trim() !== arrivalState) return false;
+                if (ownerState && route['Owner State'].trim() !== ownerState) return false;
+                if (managerState && route['Manager State'].trim() !== managerState) return false;
+                if (shipToShip && route['Involve Ship-to-Ship'] !== shipToShip) return false;
+                return true;
+            });
+
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        function resetFilters() {
+            document.getElementById('imoSearch').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('arrivalState').value = '';
+            document.getElementById('ownerState').value = '';
+            document.getElementById('managerState').value = '';
+            document.getElementById('shipToShip').value = '';
+            
+            filteredData = [...allData];
+            currentPage = 1;
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            updateStats();
+            updateCharts();
+            updateTable();
+        }
+
+        function updateStats() {
+            const uniqueShips = new Set(filteredData.map(r => r.IMO)).size;
+            const shipToShipCount = filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length;
+            const countries = new Set(filteredData.map(r => r['Arrival State'].trim())).size;
+
+            document.getElementById('totalRoutes').textContent = filteredData.length;
+            document.getElementById('totalShips').textContent = uniqueShips;
+            document.getElementById('totalShipToShip').textContent = shipToShipCount;
+            document.getElementById('totalCountries').textContent = countries;
+        }
+
+        function getChartColors(count) {
+            const colors = [
+                '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                '#43e97b', '#fa709a', '#fee140', '#30cfd0',
+                '#a8edea', '#fed6e3', '#ffa7a7', '#ffd89b',
+                '#19547b', '#eea2a2', '#fa8072', '#ff69b4'
+            ];
+            return colors.slice(0, count).concat(
+                Array(Math.max(0, count - colors.length)).fill().map((_, i) => 
+                    `hsl(${(i * 360 / count) % 360}, 70%, 50%)`
+                )
+            );
+        }
+
+        function updateCharts() {
+            // Distribuzione Bandiere
+            const flagCounts = {};
+            filteredData.forEach(r => {
+                flagCounts[r.Flag] = (flagCounts[r.Flag] || 0) + 1;
+            });
+            const topFlags = Object.entries(flagCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            
+            updateChart('flagChart', 'Bandiera', topFlags, 'doughnut');
+
+            // Distribuzione Stati Arrivo
+            const arrivalCounts = {};
+            filteredData.forEach(r => {
+                const state = r['Arrival State'].trim();
+                arrivalCounts[state] = (arrivalCounts[state] || 0) + 1;
+            });
+            const topArrival = Object.entries(arrivalCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            
+            updateChart('arrivalStateChart', 'Stato', topArrival, 'doughnut');
+
+            // Ship-to-Ship
+            const s2sCount = {
+                'Sì': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length,
+                'No': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'NO').length
+            };
+            updateChart('shipToShipChart', 'Tipo', Object.entries(s2sCount), 'pie', ['#43e97b', '#fa709a']);
+
+            // Top 10 IMO
+            const imoCounts = {};
+            filteredData.forEach(r => {
+                const name = `${r.Name} (${r.IMO})`;
+                imoCounts[name] = (imoCounts[name] || 0) + 1;
+            });
+            const topIMO = Object.entries(imoCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            
+            updateChart('topIMOChart', 'IMO', topIMO, 'bar');
+
+            // Top 10 Bandiere
+            const topFlagList = Object.entries(flagCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            updateChart('topFlagChart', 'Bandiera', topFlagList, 'bar');
+
+            // Top 10 Paesi
+            const topCountries = Object.entries(arrivalCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            updateChart('topCountriesChart', 'Paese', topCountries, 'bar');
+
+            // Arrivi per Mese
+            const monthCounts = {};
+            filteredData.forEach(r => {
+                const date = new Date(r['Time of Arrival']);
+                const monthKey = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+                monthCounts[monthKey] = (monthCounts[monthKey] || 0) + 1;
+            });
+            const sortedMonths = Object.entries(monthCounts).sort();
+            updateChart('monthlyChart', 'Mese', sortedMonths, 'line');
+        }
+
+        function updateChart(elementId, labelName, data, type, customColors = null) {
+            const ctx = document.getElementById(elementId).getContext('2d');
+            const labels = data.map(d => d[0]);
+            const values = data.map(d => d[1]);
+            const colors = customColors || getChartColors(labels.length);
+
+            if (charts[elementId]) {
+                charts[elementId].destroy();
+            }
+
+            charts[elementId] = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: labelName,
+                        data: values,
+                        backgroundColor: colors,
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: type === 'bar' || type === 'line' ? 'top' : 'right',
+                            labels: { font: { size: 12 }, padding: 15 }
+                        }
+                    },
+                    scales: type === 'bar' ? {
+                        y: { beginAtZero: true }
+                    } : {}
+                }
+            });
+        }
+
+        function updateTable() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredData.slice(start, end);
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #7f8c8d;">Nessun dato</td></tr>';
+            } else {
+                pageData.forEach(route => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${route.ID}</td>
+                        <td><strong>${route.Name}</strong></td>
+                        <td>${route.IMO}</td>
+                        <td>${route.Flag}</td>
+                        <td>${new Date(route['Time of Arrival']).toLocaleDateString('it-IT')}</td>
+                        <td>${route['Arrival State'].trim()}</td>
+                        <td>${route['Owner State'].trim()}</td>
+                        <td><span class="badge ${route['Involve Ship-to-Ship'] === 'YES' ? 'badge-yes' : 'badge-no'}">${route['Involve Ship-to-Ship']}</span></td>
+                    `;
+                });
+            }
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentPage ? 'active' : '';
+                btn.onclick = () => {
+                    currentPage = i;
+                    updateTable();
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        // Carica i dati all'avvio
+        loadData();
+    </script>
+</body>
+</html>
