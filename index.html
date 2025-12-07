@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Russian Oil Tanker Routes Dashboard</title>
+    <title>Bloody Oil Tanker Routes Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <style>
         * {
@@ -377,7 +377,7 @@
     <div class="container">
         <header>
             <h1>🚢 Bloody Oil Routes Visualizer</h1>
-            <p class="subtitle">Data visualization and analysis of russian oil and oil products export routes<br> Data from Black Sea Institute of Strategic Studies <a href="https://www.blackseanews.net/en/tag/Blood%20Oil">https://www.blackseanews.net/en/tag/Blood%20Oil</a></p>
+            <p class="subtitle">Data visualization and analysis of russian oil and oil products export routes<br> Data from Black Sea Institute of Strategic Studies <a href="https://www.blackseanews.net/en/tag/Blood%20Oil">https://www.blackseanews.net/en/tag/Blood%20Oil</a> <br> Bug report: <a href="https://t.me/itsMommos">https://t.me/itsMommos</a></p>
         </header>
 
         <div class="filters-section">
@@ -521,6 +521,17 @@
             <div class="chart-container">
                 <div class="chart-title">👥 Distribution of the Owners Countries</div>
                 <canvas id="ownerStateChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">🌍 Top 10 Managers Countries</div>
+                <canvas id="topManCountriesChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌍 Top 10 Owners Countries</div>
+                <canvas id="topOwnCountriesChart"></canvas>
             </div>
         </div>
 
@@ -783,6 +794,14 @@
             });
             const ownerStateData = Object.entries(ownerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             updateChart('ownerStateChart', 'Country', ownerStateData, 'doughnut');
+
+            // Top 10 Paesi Manager
+            const topManCountries = Object.entries(managerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            updateChart('topManCountriesChart', 'Country', topManCountries, 'bar');
+
+            // Top 10 Paesi Owner
+            const topOwnCountries = Object.entries(ownerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            updateChart('topOwnCountriesChart', 'Country', topOwnCountries, 'bar');
 
            
         }
