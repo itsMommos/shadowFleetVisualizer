@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Rotte Navi Petrolio Russo</title>
+    <title>Russian Oil Tanker Routes Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <style>
         * {
@@ -193,6 +193,60 @@
             overflow-x: auto;
         }
 
+        .table-wrapper {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .download-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-download {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-download-json {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-download-json:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-download-csv {
+            background: #43e97b;
+            color: white;
+        }
+
+        .btn-download-csv:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 233, 123, 0.3);
+        }
+
+        .owner-manager-cell {
+            max-width: 250px;
+            word-wrap: break-word;
+            white-space: normal;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
         .table-title {
             font-size: 18px;
             font-weight: 600;
@@ -249,23 +303,42 @@
             color: #721c24;
         }
 
-        .pagination {
+        .table-pagination {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
+            gap: 15px;
             margin-top: 20px;
         }
 
-        .pagination button {
-            padding: 8px 12px;
+        .btn-pagination {
+            padding: 10px 16px;
             font-size: 12px;
-            background: #ecf0f1;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .pagination button.active {
-            background: #667eea;
-            color: white;
+        .btn-pagination:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-pagination:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pagination-info {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 80px;
+            text-align: center;
         }
 
         .row {
@@ -303,54 +376,76 @@
 <body>
     <div class="container">
         <header>
-            <h1>🚢 Dashboard Rotte Navi Petrolio Russo</h1>
-            <p class="subtitle">Visualizzazione e analisi dati delle rotte di trasporto petrolifero</p>
+            <h1>🚢 Bloody Oil Routes Visualizer</h1>
+            <p class="subtitle">Data visualization and analysis of russian oil and oil products export routes<br> Data from Black Sea Institute of Strategic Studies <a href="https://www.blackseanews.net/en/tag/Blood%20Oil">https://www.blackseanews.net/en/tag/Blood%20Oil</a></p>
         </header>
 
         <div class="filters-section">
-            <div class="filters-title">🔍 Filtri di Ricerca</div>
+            <div class="filters-title">🔍 Search Filters</div>
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="imoSearch">Ricerca per IMO</label>
-                    <input type="text" id="imoSearch" placeholder="Es: 9286463">
+                    <label for="imoSearch">Search by IMO</label>
+                    <input type="text" id="imoSearch" placeholder="Ex: 9286463">
                 </div>
                 <div class="filter-group">
-                    <label for="startDate">Data Arrivo Da</label>
+                    <label for="startDDate">Departure Date From</label>
+                    <input type="date" id="startDDate">
+                </div>
+                <div class="filter-group">
+                    <label for="endDDate">Departure Date To</label>
+                    <input type="date" id="endDDate">
+                </div>
+                <div class="filter-group">
+                    <label for="startDate">Arrival Date From</label>
                     <input type="date" id="startDate">
                 </div>
                 <div class="filter-group">
-                    <label for="endDate">Data Arrivo A</label>
+                    <label for="endDate">Arrival Date To</label>
                     <input type="date" id="endDate">
                 </div>
                 <div class="filter-group">
-                    <label for="arrivalState">Stato Arrivo</label>
+                    <label for="arrivalState">Arrival Country</label>
                     <select id="arrivalState">
-                        <option value="">Tutti gli stati</option>
+                        <option value="">All States</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="ownerState">Stato Proprietario</label>
+                    <label for="ownerState">Owner Country</label>
                     <select id="ownerState">
-                        <option value="">Tutti gli stati</option>
+                        <option value="">All States</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="managerState">Stato Manager</label>
+                    <label for="managerState">Manager Country</label>
                     <select id="managerState">
-                        <option value="">Tutti gli stati</option>
+                        <option value="">All States</option>
                     </select>
+                </div>
+                <div class="filter-group">
+                    <label for="flagFilter">Ship Flag</label>
+                    <select id="flagFilter">
+                        <option value="">All Flags</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="ownerSearch">Search Owners</label>
+                    <input type="text" id="ownerSearch" placeholder="Ex: Gazpromneft, SHIPPING">
+                </div>
+                <div class="filter-group">
+                    <label for="managerSearch">Search Managers</label>
+                    <input type="text" id="managerSearch" placeholder="Ex: SCF, MARINE">
                 </div>
                 <div class="filter-group">
                     <label for="shipToShip">Ship-to-Ship</label>
                     <select id="shipToShip">
-                        <option value="">Tutti</option>
-                        <option value="YES">Sì</option>
+                        <option value="">All</option>
+                        <option value="YES">Yes</option>
                         <option value="NO">No</option>
                     </select>
                 </div>
             </div>
             <div class="button-group">
-                <button class="btn-primary" onclick="applyFilters()">Applica Filtri</button>
+                <button class="btn-primary" onclick="applyFilters()">Apply Filters</button>
                 <button class="btn-secondary" onclick="resetFilters()">Reset</button>
             </div>
         </div>
@@ -358,11 +453,11 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="totalRoutes">0</div>
-                <div class="stat-label">Rotte Totali</div>
+                <div class="stat-label">Total Routes</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalShips">0</div>
-                <div class="stat-label">Navi Uniche</div>
+                <div class="stat-label">Unique Vessels</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalShipToShip">0</div>
@@ -370,24 +465,24 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalCountries">0</div>
-                <div class="stat-label">Paesi Destinazione</div>
+                <div class="stat-label">Destination Countries</div>
             </div>
         </div>
 
         <div class="charts-section">
             <div class="chart-container">
-                <div class="chart-title">📍 Distribuzione per Bandiera</div>
+                <div class="chart-title">📍 Flag Distribution</div>
                 <canvas id="flagChart"></canvas>
             </div>
             <div class="chart-container">
-                <div class="chart-title">🌍 Distribuzione per Stato Arrivo</div>
+                <div class="chart-title">🌍 Arrival Countries Distribution</div>
                 <canvas id="arrivalStateChart"></canvas>
             </div>
         </div>
 
         <div class="charts-section">
             <div class="chart-container">
-                <div class="chart-title">📊 Distribuzione Ship-to-Ship</div>
+                <div class="chart-title">📊 Ship-to-Ship Distribution</div>
                 <canvas id="shipToShipChart"></canvas>
             </div>
             <div class="chart-container">
@@ -398,43 +493,74 @@
 
         <div class="charts-section">
             <div class="chart-container">
-                <div class="chart-title">🚩 Top 10 Bandiere</div>
+                <div class="chart-title">🚩 Top 10 Flags</div>
                 <canvas id="topFlagChart"></canvas>
             </div>
             <div class="chart-container">
-                <div class="chart-title">🏙️ Top 10 Stati Arrivo</div>
+                <div class="chart-title">🏙️ Top 10 Arrival Countries</div>
                 <canvas id="topCountriesChart"></canvas>
             </div>
         </div>
 
         <div class="charts-section">
             <div class="chart-container">
-                <div class="chart-title">📅 Arrivi per Mese</div>
+                <div class="chart-title">📤 Departures per Month</div>
+                <canvas id="departureMonthlyChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📅 Arrivals per Month</div>
                 <canvas id="monthlyChart"></canvas>
             </div>
         </div>
 
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">👥 Distribution of the Managers Countries</div>
+                <canvas id="managerStateChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">👥 Distribution of the Owners Countries</div>
+                <canvas id="ownerStateChart"></canvas>
+            </div>
+        </div>
+
         <div class="table-section">
-            <div class="table-title">📋 Dettagli Rotte</div>
+            <div class="table-title">📋 Route Details</div>
+            <div class="download-section">
+                <button class="btn-download btn-download-json" onclick="downloadJSON()">📥 Download filtered data in JSON</button>
+                <button class="btn-download btn-download-csv" onclick="downloadCSV()">📥 Download filtered data in CSV</button>
+            </div>
+            <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nome Nave</th>
+                        <th>Vessel Name</th>
                         <th>IMO</th>
-                        <th>Bandiera</th>
-                        <th>Data Arrivo</th>
-                        <th>Stato Arrivo</th>
-                        <th>Stato Proprietario</th>
+                        <th>Flag</th>
+                        <th>Departure Point</th>
+                        <th>Departure Date</th>
+                        <th>Arrival Point</th>
+                        <th>Arrival Date</th>
+                        <th>Arrival Country</th>
+                        <th>Owner</th>
+                        <th>Owner Contry</th>
+                        <th>Manager</th>
+                        <th>Manager Country</th>
                         <th>Ship-to-Ship</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                 </tbody>
             </table>
-            <div class="pagination" id="pagination"></div>
-        </table>
-    </div>
+            </div>
+            <div class="table-pagination">
+                <button class="btn-pagination" onclick="goToFirstPage()">First</button>
+                <button class="btn-pagination" onclick="previousPage()">Previous</button>
+                <span class="pagination-info" id="pageInfo">Page 1</span>
+                <button class="btn-pagination" onclick="nextPage()">Next</button>
+                <button class="btn-pagination" onclick="goToLastPage()">Last</button>
+            </div>
+        </div>
 
     <script>
         let allData = [];
@@ -466,11 +592,13 @@
             const arrivalStates = new Set();
             const ownerStates = new Set();
             const managerStates = new Set();
+            const flags = new Set();
 
             allData.forEach(route => {
                 if (route['Arrival State']) arrivalStates.add(route['Arrival State'].trim());
                 if (route['Owner State']) ownerStates.add(route['Owner State'].trim());
                 if (route['Manager State']) managerStates.add(route['Manager State'].trim());
+                if (route['Flag']) flags.add(route['Flag'].trim());
             });
 
             const populateSelect = (id, items) => {
@@ -486,24 +614,35 @@
             populateSelect('arrivalState', Array.from(arrivalStates).sort());
             populateSelect('ownerState', Array.from(ownerStates).sort());
             populateSelect('managerState', Array.from(managerStates).sort());
+            populateSelect('flagFilter', Array.from(flags).sort());
         }
 
         function applyFilters() {
             const imo = document.getElementById('imoSearch').value.trim();
+            const startDDate = document.getElementById('startDDate').value;
+            const endDDate = document.getElementById('endDDate').value;
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             const arrivalState = document.getElementById('arrivalState').value;
             const ownerState = document.getElementById('ownerState').value;
             const managerState = document.getElementById('managerState').value;
+            const flag = document.getElementById('flagFilter').value;
+            const ownerSearch = document.getElementById('ownerSearch').value.trim().toLowerCase();
+            const managerSearch = document.getElementById('managerSearch').value.trim().toLowerCase();
             const shipToShip = document.getElementById('shipToShip').value;
 
             filteredData = allData.filter(route => {
                 if (imo && route.IMO.toString() !== imo) return false;
+                if (startDDate && new Date(route['Time of Departure']) < new Date(startDDate)) return false;
+                if (endDDate && new Date(route['Time of Departure']) > new Date(endDDate)) return false;
                 if (startDate && new Date(route['Time of Arrival']) < new Date(startDate)) return false;
                 if (endDate && new Date(route['Time of Arrival']) > new Date(endDate)) return false;
                 if (arrivalState && route['Arrival State'].trim() !== arrivalState) return false;
                 if (ownerState && route['Owner State'].trim() !== ownerState) return false;
                 if (managerState && route['Manager State'].trim() !== managerState) return false;
+                if (flag && route['Flag'].trim() !== flag) return false;
+                if (ownerSearch && !route['Registered owner'].toLowerCase().includes(ownerSearch)) return false;
+                if (managerSearch && !route['Ship/Commercial Manager'].toLowerCase().includes(managerSearch)) return false;
                 if (shipToShip && route['Involve Ship-to-Ship'] !== shipToShip) return false;
                 return true;
             });
@@ -514,11 +653,16 @@
 
         function resetFilters() {
             document.getElementById('imoSearch').value = '';
+            document.getElementById('startDDate').value = '';
+            document.getElementById('endDDate').value = '';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
             document.getElementById('arrivalState').value = '';
             document.getElementById('ownerState').value = '';
             document.getElementById('managerState').value = '';
+            document.getElementById('flagFilter').value = '';
+            document.getElementById('ownerSearch').value = '';
+            document.getElementById('managerSearch').value = '';
             document.getElementById('shipToShip').value = '';
             
             filteredData = [...allData];
@@ -579,7 +723,7 @@
 
             // Ship-to-Ship
             const s2sCount = {
-                'Sì': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length,
+                'Yes': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length,
                 'No': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'NO').length
             };
             updateChart('shipToShipChart', 'Tipo', Object.entries(s2sCount), 'pie', ['#43e97b', '#fa709a']);
@@ -596,13 +740,23 @@
 
             // Top 10 Bandiere
             const topFlagList = Object.entries(flagCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
-            updateChart('topFlagChart', 'Bandiera', topFlagList, 'bar');
+            updateChart('topFlagChart', 'Flag', topFlagList, 'bar');
 
             // Top 10 Paesi
             const topCountries = Object.entries(arrivalCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
-            updateChart('topCountriesChart', 'Paese', topCountries, 'bar');
+            updateChart('topCountriesChart', 'Country', topCountries, 'bar');
 
-            // Arrivi per Mese
+            // Departures per Month
+            const departureMonthCounts = {};
+            filteredData.forEach(r => {
+                const date = new Date(r['Time of Departure']);
+                const monthKey = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+                departureMonthCounts[monthKey] = (departureMonthCounts[monthKey] || 0) + 1;
+            });
+            const sortedDepartureMonths = Object.entries(departureMonthCounts).sort();
+            updateChart('departureMonthlyChart', 'Month', sortedDepartureMonths, 'line');
+
+            // Arrivals per Month
             const monthCounts = {};
             filteredData.forEach(r => {
                 const date = new Date(r['Time of Arrival']);
@@ -610,7 +764,27 @@
                 monthCounts[monthKey] = (monthCounts[monthKey] || 0) + 1;
             });
             const sortedMonths = Object.entries(monthCounts).sort();
-            updateChart('monthlyChart', 'Mese', sortedMonths, 'line');
+            updateChart('monthlyChart', 'Month', sortedMonths, 'line');
+
+            // Distribuzione Stati Manager
+            const managerStateCounts = {};
+            filteredData.forEach(r => {
+                const state = r['Manager State'].trim();
+                managerStateCounts[state] = (managerStateCounts[state] || 0) + 1;
+            });
+            const managerStateData = Object.entries(managerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            updateChart('managerStateChart', 'Country', managerStateData, 'doughnut');
+
+            // Owner State Distribution
+            const ownerStateCounts = {};
+            filteredData.forEach(r => {
+                const state = r['Owner State'].trim();
+                ownerStateCounts[state] = (ownerStateCounts[state] || 0) + 1;
+            });
+            const ownerStateData = Object.entries(ownerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            updateChart('ownerStateChart', 'Country', ownerStateData, 'doughnut');
+
+           
         }
 
         function updateChart(elementId, labelName, data, type, customColors = null) {
@@ -662,41 +836,135 @@
             tbody.innerHTML = '';
 
             if (pageData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #7f8c8d;">Nessun dato</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="13" style="text-align: center; color: #7f8c8d;">No data available</td></tr>';
             } else {
                 pageData.forEach(route => {
                     const row = tbody.insertRow();
+                    const ownerText = route['Registered owner'] || '';
+                    const managerText = route['Ship/Commercial Manager'] || '';
                     row.innerHTML = `
-                        <td>${route.ID}</td>
                         <td><strong>${route.Name}</strong></td>
                         <td>${route.IMO}</td>
                         <td>${route.Flag}</td>
+                        <td>${route['Starting point']}</td>
+                        <td>${new Date(route['Time of Departure']).toLocaleDateString('it-IT')}</td>
+                        <td>${route['Arrival point']}</td>
                         <td>${new Date(route['Time of Arrival']).toLocaleDateString('it-IT')}</td>
                         <td>${route['Arrival State'].trim()}</td>
+                        <td class="owner-manager-cell">${ownerText}</td>
                         <td>${route['Owner State'].trim()}</td>
+                        <td class="owner-manager-cell">${managerText}</td>
+                        <td>${route['Manager State'].trim()}</td>
                         <td><span class="badge ${route['Involve Ship-to-Ship'] === 'YES' ? 'badge-yes' : 'badge-no'}">${route['Involve Ship-to-Ship']}</span></td>
                     `;
                 });
             }
 
-            updatePagination();
+            updatePaginationButtons();
         }
 
-        function updatePagination() {
+        function updatePaginationButtons() {
             const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            document.querySelector('[onclick="goToFirstPage()"]').disabled = currentPage === 1;
+            document.querySelector('[onclick="previousPage()"]').disabled = currentPage === 1;
+            document.querySelector('[onclick="nextPage()"]').disabled = currentPage === totalPages;
+            document.querySelector('[onclick="goToLastPage()"]').disabled = currentPage === totalPages;
+        }
 
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = i === currentPage ? 'active' : '';
-                btn.onclick = () => {
-                    currentPage = i;
-                    updateTable();
-                };
-                pagination.appendChild(btn);
+        function goToFirstPage() {
+            currentPage = 1;
+            updateTable();
+        }
+
+        function previousPage() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
             }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTable();
+            }
+        }
+
+        function goToLastPage() {
+            currentPage = Math.ceil(filteredData.length / itemsPerPage);
+            updateTable();
+        }
+
+        function downloadJSON() {
+            const dataToDownload = {
+                metadata: {
+                    totalRoutes: filteredData.length,
+                    totalShips: new Set(filteredData.map(r => r.IMO)).size,
+                    shipToShipCount: filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length,
+                    exportDate: new Date().toLocaleString('en-US'),
+                    filters: {
+                        imo: document.getElementById('imoSearch').value || 'None',
+                        startDDate: document.getElementById('startDDate').value || 'None',
+                        endDDate: document.getElementById('endDDate').value || 'None',
+                        startDate: document.getElementById('startDate').value || 'None',
+                        endDate: document.getElementById('endDate').value || 'None',
+                        arrivalState: document.getElementById('arrivalState').value || 'All',
+                        ownerState: document.getElementById('ownerState').value || 'All',
+                        managerState: document.getElementById('managerState').value || 'All',
+                        flag: document.getElementById('flagFilter').value || 'All',
+                        shipToShip: document.getElementById('shipToShip').value || 'All'
+                    }
+                },
+                routes: filteredData
+            };
+            
+            const jsonString = JSON.stringify(dataToDownload, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `oil_routes_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function downloadCSV() {
+            const headers = ['Vessel Name', 'IMO', 'Flag', 'Departure Point', 'Departure Date', 
+                           'Arrival Point', 'Arrival Date', 'Arrival Country', 'Owner', 
+                           'Owner Country', 'Manager', 'Manager Country', 'Ship-to-Ship'];
+            
+            const rows = filteredData.map(route => [
+                `"${route.Name}"`,
+                route.IMO,
+                route.Flag,
+                route['Starting point'],
+                new Date(route['Time of Departure']).toLocaleDateString('it-IT'),
+                route['Arrival point'],
+                new Date(route['Time of Arrival']).toLocaleDateString('it-IT'),
+                `"${route['Arrival State'].trim()}"`,
+                `"${route['Registered owner'].replace(/"/g, '""')}"`,
+                route['Owner State'].trim(),
+                `"${route['Ship/Commercial Manager'].replace(/"/g, '""')}"`,
+                route['Manager State'].trim(),
+                route['Involve Ship-to-Ship']
+            ]);
+            
+            const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `oil_routes_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
         }
 
         // Carica i dati all'avvio
