@@ -384,8 +384,20 @@
             <div class="filters-title">🔍 Search Filters</div>
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="imoSearch">Search by IMO</label>
-                    <input type="text" id="imoSearch" placeholder="Ex: 9286463">
+                    <label for="nameSearch">Search Ship Name</label>
+                    <input type="text" id="nameSearch" placeholder="Ex: Sea Jewel, SAMSARA">
+                </div>
+                <div class="filter-group">
+                    <label for="ownerSearch">Search Owners</label>
+                    <input type="text" id="ownerSearch" placeholder="Ex: Gazpromneft, SHIPPING">
+                </div>
+                <div class="filter-group">
+                    <label for="managerSearch">Search Managers</label>
+                    <input type="text" id="managerSearch" placeholder="Ex: SCF, MARINE">
+                </div>
+                <div class="filter-group">
+                    <label for="ismSearch">Search ISM</label>
+                    <input type="text" id="ismSearch" placeholder="Ex: SCF, MARINE">
                 </div>
                 <div class="filter-group">
                     <label for="startDDate">Departure Date From</label>
@@ -422,26 +434,29 @@
                     </select>
                 </div>
                 <div class="filter-group">
+                    <label for="ISMState">ISM Country</label>
+                    <select id="ISMState">
+                        <option value="">All States</option>
+                    </select>
+                </div>
+                <div class="filter-group">
                     <label for="flagFilter">Ship Flag</label>
                     <select id="flagFilter">
                         <option value="">All Flags</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="ownerSearch">Search Owners</label>
-                    <input type="text" id="ownerSearch" placeholder="Ex: Gazpromneft, SHIPPING">
-                </div>
-                <div class="filter-group">
-                    <label for="managerSearch">Search Managers</label>
-                    <input type="text" id="managerSearch" placeholder="Ex: SCF, MARINE">
-                </div>
-                <div class="filter-group">
                     <label for="shipToShip">Ship-to-Ship</label>
                     <select id="shipToShip">
                         <option value="">All</option>
-                        <option value="YES">Yes</option>
-                        <option value="NO">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="Maybe">Maybe</option>
                     </select>
+                </div>
+                <div class="filter-group">
+                    <label for="imoSearch">Search by IMO</label>
+                    <input type="text" id="imoSearch" placeholder="Ex: 9286463">
                 </div>
             </div>
             <div class="button-group">
@@ -461,7 +476,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalShipToShip">0</div>
-                <div class="stat-label">Ship-to-Ship</div>
+                <div class="stat-label">Confirmed Ship-to-Ship</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalCountries">0</div>
@@ -482,12 +497,23 @@
 
         <div class="charts-section">
             <div class="chart-container">
-                <div class="chart-title">📊 Ship-to-Ship Distribution</div>
-                <canvas id="shipToShipChart"></canvas>
+                <div class="chart-title">👥 Distribution of Owners Countries</div>
+                <canvas id="ownerStateChart"></canvas>
             </div>
             <div class="chart-container">
-                <div class="chart-title">🏆 Top 10 IMO</div>
-                <canvas id="topIMOChart"></canvas>
+                <div class="chart-title">👥 Distribution of Managers Countries</div>
+                <canvas id="managerStateChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">👥 Distribution of ISMs Countries</div>
+                <canvas id="ISMStateChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📊 Ship-to-Ship Distribution</div>
+                <canvas id="shipToShipChart"></canvas>
             </div>
         </div>
 
@@ -504,6 +530,28 @@
 
         <div class="charts-section">
             <div class="chart-container">
+                <div class="chart-title">🌍 Top 10 Managers Countries</div>
+                <canvas id="topManCountriesChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌍 Top 10 ISMs Countries</div>
+                <canvas id="topISMCountriesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">🌍 Top 10 Owners Countries</div>
+                <canvas id="topOwnCountriesChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🏆 Top 10 IMO</div>
+                <canvas id="topIMOChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
                 <div class="chart-title">📤 Departures per Month</div>
                 <canvas id="departureMonthlyChart"></canvas>
             </div>
@@ -513,32 +561,9 @@
             </div>
         </div>
 
-        <div class="charts-section">
-            <div class="chart-container">
-                <div class="chart-title">👥 Distribution of the Managers Countries</div>
-                <canvas id="managerStateChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">👥 Distribution of the Owners Countries</div>
-                <canvas id="ownerStateChart"></canvas>
-            </div>
-        </div>
-
-        <div class="charts-section">
-            <div class="chart-container">
-                <div class="chart-title">🌍 Top 10 Managers Countries</div>
-                <canvas id="topManCountriesChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">🌍 Top 10 Owners Countries</div>
-                <canvas id="topOwnCountriesChart"></canvas>
-            </div>
-        </div>
-
         <div class="table-section">
             <div class="table-title">📋 Route Details</div>
             <div class="download-section">
-                <button class="btn-download btn-download-json" onclick="downloadJSON()">📥 Download filtered data in JSON</button>
                 <button class="btn-download btn-download-csv" onclick="downloadCSV()">📥 Download filtered data in CSV</button>
             </div>
             <div class="table-wrapper">
@@ -553,11 +578,13 @@
                         <th>Arrival Point</th>
                         <th>Arrival Date</th>
                         <th>Arrival Country</th>
+                        <th>Ship-to-Ship</th>
                         <th>Owner</th>
                         <th>Owner Contry</th>
                         <th>Manager</th>
                         <th>Manager Country</th>
-                        <th>Ship-to-Ship</th>
+                        <th>ISM</th>
+                        <th>ISM Country</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -603,12 +630,14 @@
             const arrivalStates = new Set();
             const ownerStates = new Set();
             const managerStates = new Set();
+            const ISMStates = new Set();
             const flags = new Set();
 
             allData.forEach(route => {
                 if (route['Arrival State']) arrivalStates.add(route['Arrival State'].trim());
                 if (route['Owner State']) ownerStates.add(route['Owner State'].trim());
                 if (route['Manager State']) managerStates.add(route['Manager State'].trim());
+                if (route['ISM State']) ISMStates.add(route['ISM State'].trim());
                 if (route['Flag']) flags.add(route['Flag'].trim());
             });
 
@@ -625,6 +654,7 @@
             populateSelect('arrivalState', Array.from(arrivalStates).sort());
             populateSelect('ownerState', Array.from(ownerStates).sort());
             populateSelect('managerState', Array.from(managerStates).sort());
+            populateSelect('ISMState', Array.from(ISMStates).sort());
             populateSelect('flagFilter', Array.from(flags).sort());
         }
 
@@ -637,9 +667,12 @@
             const arrivalState = document.getElementById('arrivalState').value;
             const ownerState = document.getElementById('ownerState').value;
             const managerState = document.getElementById('managerState').value;
+            const ISMState = document.getElementById('ISMState').value;
             const flag = document.getElementById('flagFilter').value;
+            const nameSearch = document.getElementById('nameSearch').value.trim().toLowerCase();
             const ownerSearch = document.getElementById('ownerSearch').value.trim().toLowerCase();
             const managerSearch = document.getElementById('managerSearch').value.trim().toLowerCase();
+            const ismSearch = document.getElementById('ismSearch').value.trim().toLowerCase();
             const shipToShip = document.getElementById('shipToShip').value;
 
             filteredData = allData.filter(route => {
@@ -651,9 +684,12 @@
                 if (arrivalState && route['Arrival State'].trim() !== arrivalState) return false;
                 if (ownerState && route['Owner State'].trim() !== ownerState) return false;
                 if (managerState && route['Manager State'].trim() !== managerState) return false;
+                if (ISMState && route['ISM State'].trim() !== ISMState) return false;
                 if (flag && route['Flag'].trim() !== flag) return false;
-                if (ownerSearch && !route['Registered owner'].toLowerCase().includes(ownerSearch)) return false;
-                if (managerSearch && !route['Ship/Commercial Manager'].toLowerCase().includes(managerSearch)) return false;
+                if (nameSearch && !route['Name'].toLowerCase().includes(nameSearch)) return false;
+                if (ownerSearch && !route['Registered Owner'].toLowerCase().includes(ownerSearch)) return false;
+                if (managerSearch && !route['Ship manager'].toLowerCase().includes(managerSearch)) return false;
+                if (ismSearch && !route['ISM'].trim().toLowerCase().includes(ismSearch)) return false;
                 if (shipToShip && route['Involve Ship-to-Ship'] !== shipToShip) return false;
                 return true;
             });
@@ -671,9 +707,12 @@
             document.getElementById('arrivalState').value = '';
             document.getElementById('ownerState').value = '';
             document.getElementById('managerState').value = '';
+            document.getElementById('ISMState').value = '';
             document.getElementById('flagFilter').value = '';
             document.getElementById('ownerSearch').value = '';
+            document.getElementById('nameSearch').value = '';
             document.getElementById('managerSearch').value = '';
+            document.getElementById('ismSearch').value = '';
             document.getElementById('shipToShip').value = '';
             
             filteredData = [...allData];
@@ -689,7 +728,7 @@
 
         function updateStats() {
             const uniqueShips = new Set(filteredData.map(r => r.IMO)).size;
-            const shipToShipCount = filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length;
+            const shipToShipCount = filteredData.filter(r => r['Involve Ship-to-Ship'] === 'Yes').length;
             const countries = new Set(filteredData.map(r => r['Arrival State'].trim())).size;
 
             document.getElementById('totalRoutes').textContent = filteredData.length;
@@ -720,7 +759,7 @@
             });
             const topFlags = Object.entries(flagCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             
-            updateChart('flagChart', 'Bandiera', topFlags, 'doughnut');
+            updateChart('flagChart', 'Flag', topFlags, 'doughnut');
 
             // Distribuzione Stati Arrivo
             const arrivalCounts = {};
@@ -730,14 +769,15 @@
             });
             const topArrival = Object.entries(arrivalCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             
-            updateChart('arrivalStateChart', 'Stato', topArrival, 'doughnut');
+            updateChart('arrivalStateChart', 'State', topArrival, 'doughnut');
 
             // Ship-to-Ship
             const s2sCount = {
-                'Yes': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length,
-                'No': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'NO').length
+                'Yes': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'Yes').length,
+                'No': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'No').length,
+                'Maybe': filteredData.filter(r => r['Involve Ship-to-Ship'] === 'Maybe').length
             };
-            updateChart('shipToShipChart', 'Tipo', Object.entries(s2sCount), 'pie', ['#43e97b', '#fa709a']);
+            updateChart('shipToShipChart', 'Tipo', Object.entries(s2sCount), 'pie', ['#00fa2a', '#fa0000', '#cbf207']);
 
             // Top 10 IMO
             const imoCounts = {};
@@ -786,6 +826,15 @@
             const managerStateData = Object.entries(managerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             updateChart('managerStateChart', 'Country', managerStateData, 'doughnut');
 
+            // Distribuzione Stati ISM
+            const ISMStateCounts = {};
+            filteredData.forEach(r => {
+                const state = r['ISM State'].trim();
+                ISMStateCounts[state] = (ISMStateCounts[state] || 0) + 1;
+            });
+            const ISMStateData = Object.entries(ISMStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            updateChart('ISMStateChart', 'Country', ISMStateData, 'doughnut');
+
             // Owner State Distribution
             const ownerStateCounts = {};
             filteredData.forEach(r => {
@@ -798,6 +847,10 @@
             // Top 10 Paesi Manager
             const topManCountries = Object.entries(managerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
             updateChart('topManCountriesChart', 'Country', topManCountries, 'bar');
+
+            // Top 10 Paesi ISM
+            const topISMCountries = Object.entries(ISMStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            updateChart('topISMCountriesChart', 'Country', topISMCountries, 'bar');
 
             // Top 10 Paesi Owner
             const topOwnCountries = Object.entries(ownerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
@@ -859,8 +912,9 @@
             } else {
                 pageData.forEach(route => {
                     const row = tbody.insertRow();
-                    const ownerText = route['Registered owner'] || '';
-                    const managerText = route['Ship/Commercial Manager'] || '';
+                    const ownerText = route['Registered Owner'] || '';
+                    const managerText = route['Ship manager'] || '';
+                    const ismText = route['ISM'] || '';
                     row.innerHTML = `
                         <td><strong>${route.Name}</strong></td>
                         <td>${route.IMO}</td>
@@ -870,11 +924,13 @@
                         <td>${route['Arrival point']}</td>
                         <td>${new Date(route['Time of Arrival']).toLocaleDateString('it-IT')}</td>
                         <td>${route['Arrival State'].trim()}</td>
+                        <td>${route['Involve Ship-to-Ship']}</td>
                         <td class="owner-manager-cell">${ownerText}</td>
                         <td>${route['Owner State'].trim()}</td>
                         <td class="owner-manager-cell">${managerText}</td>
                         <td>${route['Manager State'].trim()}</td>
-                        <td><span class="badge ${route['Involve Ship-to-Ship'] === 'YES' ? 'badge-yes' : 'badge-no'}">${route['Involve Ship-to-Ship']}</span></td>
+                        <td class="owner-manager-cell">${ismText}</td>
+                        <td>${route['ISM State'].trim()}</td>   
                     `;
                 });
             }
@@ -918,45 +974,11 @@
             updateTable();
         }
 
-        function downloadJSON() {
-            const dataToDownload = {
-                metadata: {
-                    totalRoutes: filteredData.length,
-                    totalShips: new Set(filteredData.map(r => r.IMO)).size,
-                    shipToShipCount: filteredData.filter(r => r['Involve Ship-to-Ship'] === 'YES').length,
-                    exportDate: new Date().toLocaleString('en-US'),
-                    filters: {
-                        imo: document.getElementById('imoSearch').value || 'None',
-                        startDDate: document.getElementById('startDDate').value || 'None',
-                        endDDate: document.getElementById('endDDate').value || 'None',
-                        startDate: document.getElementById('startDate').value || 'None',
-                        endDate: document.getElementById('endDate').value || 'None',
-                        arrivalState: document.getElementById('arrivalState').value || 'All',
-                        ownerState: document.getElementById('ownerState').value || 'All',
-                        managerState: document.getElementById('managerState').value || 'All',
-                        flag: document.getElementById('flagFilter').value || 'All',
-                        shipToShip: document.getElementById('shipToShip').value || 'All'
-                    }
-                },
-                routes: filteredData
-            };
-            
-            const jsonString = JSON.stringify(dataToDownload, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `oil_routes_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-        }
 
         function downloadCSV() {
             const headers = ['Vessel Name', 'IMO', 'Flag', 'Departure Point', 'Departure Date', 
-                           'Arrival Point', 'Arrival Date', 'Arrival Country', 'Owner', 
-                           'Owner Country', 'Manager', 'Manager Country', 'Ship-to-Ship'];
+                           'Arrival Point', 'Arrival Date', 'Arrival Country', 'Ship-to-Ship', 'Owner', 
+                           'Owner Country', 'Manager', 'Manager Country', 'ISM', 'ISM Country'];
             
             const rows = filteredData.map(route => [
                 `"${route.Name}"`,
@@ -967,11 +989,13 @@
                 route['Arrival point'],
                 new Date(route['Time of Arrival']).toLocaleDateString('it-IT'),
                 `"${route['Arrival State'].trim()}"`,
-                `"${route['Registered owner'].replace(/"/g, '""')}"`,
+                route['Involve Ship-to-Ship'],
+                `"${route['Registered Owner'].replace(/"/g, '""')}"`,
                 route['Owner State'].trim(),
-                `"${route['Ship/Commercial Manager'].replace(/"/g, '""')}"`,
+                `"${route['Ship manager'].replace(/"/g, '""')}"`,
                 route['Manager State'].trim(),
-                route['Involve Ship-to-Ship']
+                `"${route['ISM'].replace(/"/g, '""')}"`,
+                route['ISM State'].trim()
             ]);
             
             const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
