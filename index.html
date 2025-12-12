@@ -561,9 +561,21 @@
             </div>
         </div>
 
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">🚢 Top 10 Departure Points</div>
+                <canvas id="topDPChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">⚓ Top 10 Arrival Points</div>
+                <canvas id="topAPChart"></canvas>
+            </div>
+        </div>
+
         <div class="table-section">
             <div class="table-title">📋 Route Details</div>
             <div class="download-section">
+                <button class="btn-download btn-download-json" onclick="downloadJSON()">📥 Download filtered data in JSON</button>
                 <button class="btn-download btn-download-csv" onclick="downloadCSV()">📥 Download filtered data in CSV</button>
             </div>
             <div class="table-wrapper">
@@ -755,7 +767,10 @@
             // Distribuzione Bandiere
             const flagCounts = {};
             filteredData.forEach(r => {
-                flagCounts[r.Flag] = (flagCounts[r.Flag] || 0) + 1;
+                flag = r.Flag.trim()
+                if (flag !== 'Unknown' && flag !== '') {
+                    flagCounts[r.Flag] = (flagCounts[r.Flag] || 0) + 1;
+                }
             });
             const topFlags = Object.entries(flagCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             
@@ -765,11 +780,35 @@
             const arrivalCounts = {};
             filteredData.forEach(r => {
                 const state = r['Arrival State'].trim();
-                arrivalCounts[state] = (arrivalCounts[state] || 0) + 1;
+                if (state !== 'Unknown' && state !== '') {
+                    arrivalCounts[state] = (arrivalCounts[state] || 0) + 1;
+                }
             });
             const topArrival = Object.entries(arrivalCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             
             updateChart('arrivalStateChart', 'State', topArrival, 'doughnut');
+
+             // Top10 arrival point
+            const apCounts = {};
+            filteredData.forEach(r => {
+                const ap = r['Arrival point'].trim();
+                if (ap !== 'Unknown' && ap !== '') {
+                    apCounts[ap] = (apCounts[ap] || 0) + 1;
+                }
+            });
+            const topArrivalPoints = Object.entries(apCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            updateChart('topAPChart', 'Arrival Point', topArrivalPoints, 'bar');
+
+            // Top10 arrival point
+            const dpCounts = {};
+            filteredData.forEach(r => {
+                const dp = r['Starting point'].trim();
+                if (dp !== 'Unknown' && dp !== '') {
+                    dpCounts[dp] = (dpCounts[dp] || 0) + 1;
+                }
+            });
+            const topDeparturePoints = Object.entries(dpCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            updateChart('topDPChart', 'Departure Point', topDeparturePoints, 'bar');
 
             // Ship-to-Ship
             const s2sCount = {
@@ -821,7 +860,9 @@
             const managerStateCounts = {};
             filteredData.forEach(r => {
                 const state = r['Manager State'].trim();
-                managerStateCounts[state] = (managerStateCounts[state] || 0) + 1;
+                if (state !== 'Unknown' && state !== '') {
+                    managerStateCounts[state] = (managerStateCounts[state] || 0) + 1;
+                }
             });
             const managerStateData = Object.entries(managerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             updateChart('managerStateChart', 'Country', managerStateData, 'doughnut');
@@ -830,7 +871,9 @@
             const ISMStateCounts = {};
             filteredData.forEach(r => {
                 const state = r['ISM State'].trim();
-                ISMStateCounts[state] = (ISMStateCounts[state] || 0) + 1;
+                if (state !== 'Unknown' && state !== '') {
+                    ISMStateCounts[state] = (ISMStateCounts[state] || 0) + 1;
+                }
             });
             const ISMStateData = Object.entries(ISMStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             updateChart('ISMStateChart', 'Country', ISMStateData, 'doughnut');
@@ -839,7 +882,9 @@
             const ownerStateCounts = {};
             filteredData.forEach(r => {
                 const state = r['Owner State'].trim();
-                ownerStateCounts[state] = (ownerStateCounts[state] || 0) + 1;
+                if (state !== 'Unknown' && state !== '') {
+                    ownerStateCounts[state] = (ownerStateCounts[state] || 0) + 1;
+                }
             });
             const ownerStateData = Object.entries(ownerStateCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
             updateChart('ownerStateChart', 'Country', ownerStateData, 'doughnut');
@@ -974,6 +1019,29 @@
             updateTable();
         }
 
+
+        function downloadJSON() {
+              const jsonData = {
+                metadata: {
+                  totalFilteredRoutes: filteredData.length,
+                  downloadDate: new Date().toISOString(),
+                  filtersApplied: true // Potresti espandere con i filtri attivi
+                },
+                routes: filteredData
+              };
+              
+              const jsonContent = JSON.stringify(jsonData, null, 2);
+              const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8' });
+              const url = window.URL.createObjectURL(blob);
+              
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `oilroutes_filtered_${new Date().toISOString().split('T')[0]}.json`;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+            }
 
         function downloadCSV() {
             const headers = ['Vessel Name', 'IMO', 'Flag', 'Departure Point', 'Departure Date', 
