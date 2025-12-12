@@ -415,10 +415,11 @@
                     <label for="endDate">Arrival Date To</label>
                     <input type="date" id="endDate">
                 </div>
+            
                 <div class="filter-group">
-                    <label for="arrivalState">Arrival Country</label>
-                    <select id="arrivalState">
-                        <option value="">All States</option>
+                    <label for="flagFilter">Ship Flag</label>
+                    <select id="flagFilter">
+                        <option value="">All Flags</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -439,11 +440,11 @@
                         <option value="">All States</option>
                     </select>
                 </div>
+                
+                
                 <div class="filter-group">
-                    <label for="flagFilter">Ship Flag</label>
-                    <select id="flagFilter">
-                        <option value="">All Flags</option>
-                    </select>
+                    <label for="imoSearch">Search by IMO</label>
+                    <input type="text" id="imoSearch" placeholder="Ex: 9286463">
                 </div>
                 <div class="filter-group">
                     <label for="shipToShip">Ship-to-Ship</label>
@@ -455,9 +456,18 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="imoSearch">Search by IMO</label>
-                    <input type="text" id="imoSearch" placeholder="Ex: 9286463">
+                    <label for="arrivalState">Arrival Country</label>
+                    <select id="arrivalState">
+                        <option value="">All States</option>
+                    </select>
                 </div>
+                <div class="filter-group">
+                    <label for="arrivalPoint">Arrival Point</label>
+                    <select id="arrivalPoint">
+                        <option value="">Everywhere</option>
+                    </select>
+                </div>
+
             </div>
             <div class="button-group">
                 <button class="btn-primary" onclick="applyFilters()">Apply Filters</button>
@@ -642,6 +652,7 @@
             const arrivalStates = new Set();
             const ownerStates = new Set();
             const managerStates = new Set();
+            const arrivalPoints = new Set();
             const ISMStates = new Set();
             const flags = new Set();
 
@@ -651,6 +662,7 @@
                 if (route['Manager State']) managerStates.add(route['Manager State'].trim());
                 if (route['ISM State']) ISMStates.add(route['ISM State'].trim());
                 if (route['Flag']) flags.add(route['Flag'].trim());
+                if (route['Arrival point']) arrivalPoints.add(route['Arrival point'].trim())
             });
 
             const populateSelect = (id, items) => {
@@ -666,6 +678,7 @@
             populateSelect('arrivalState', Array.from(arrivalStates).sort());
             populateSelect('ownerState', Array.from(ownerStates).sort());
             populateSelect('managerState', Array.from(managerStates).sort());
+            populateSelect('arrivalPoint', Array.from(arrivalPoints).sort());
             populateSelect('ISMState', Array.from(ISMStates).sort());
             populateSelect('flagFilter', Array.from(flags).sort());
         }
@@ -686,6 +699,7 @@
             const managerSearch = document.getElementById('managerSearch').value.trim().toLowerCase();
             const ismSearch = document.getElementById('ismSearch').value.trim().toLowerCase();
             const shipToShip = document.getElementById('shipToShip').value;
+            const arrivalPoint = document.getElementById('arrivalPoint').value;
 
             filteredData = allData.filter(route => {
                 if (imo && route.IMO.toString() !== imo) return false;
@@ -698,6 +712,7 @@
                 if (managerState && route['Manager State'].trim() !== managerState) return false;
                 if (ISMState && route['ISM State'].trim() !== ISMState) return false;
                 if (flag && route['Flag'].trim() !== flag) return false;
+                if (arrivalPoint && route['Arrival point'].trim() !== arrivalPoint) return false;
                 if (nameSearch && !route['Name'].toLowerCase().includes(nameSearch)) return false;
                 if (ownerSearch && !route['Registered Owner'].toLowerCase().includes(ownerSearch)) return false;
                 if (managerSearch && !route['Ship manager'].toLowerCase().includes(managerSearch)) return false;
@@ -726,6 +741,7 @@
             document.getElementById('managerSearch').value = '';
             document.getElementById('ismSearch').value = '';
             document.getElementById('shipToShip').value = '';
+            document.getElementById('arrivalPoint').value = '';
             
             filteredData = [...allData];
             currentPage = 1;
