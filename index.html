@@ -812,7 +812,7 @@
                     apCounts[ap] = (apCounts[ap] || 0) + 1;
                 }
             });
-            const topArrivalPoints = Object.entries(apCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            const topArrivalPoints = Object.entries(apCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
             updateChart('topAPChart', 'Arrival Point', topArrivalPoints, 'bar');
 
             // Top10 arrival point
@@ -823,7 +823,7 @@
                     dpCounts[dp] = (dpCounts[dp] || 0) + 1;
                 }
             });
-            const topDeparturePoints = Object.entries(dpCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            const topDeparturePoints = Object.entries(dpCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
             updateChart('topDPChart', 'Departure Point', topDeparturePoints, 'bar');
 
             // Ship-to-Ship
@@ -922,7 +922,8 @@
 
         function updateChart(elementId, labelName, data, type, customColors = null) {
             const ctx = document.getElementById(elementId).getContext('2d');
-            const labels = data.map(d => d[0]);
+            const labels = data.map(d => truncateLabel(d[0], 20));
+
             const values = data.map(d => d[1]);
             const colors = customColors || getChartColors(labels.length);
 
@@ -1094,8 +1095,18 @@
             document.body.removeChild(a);
         }
 
+        function truncateLabel(label, maxLength = 20) {
+          if (!label) return '';
+          return label.length > maxLength ? label.slice(0, maxLength) + '…' : label;
+        }
+
         // Carica i dati all'avvio
         loadData();
     </script>
+
+
+
+
+
 </body>
 </html>
